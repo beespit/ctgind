@@ -1,7 +1,5 @@
-import { NextLink } from '@site/utilities/deps';
 import { createClient } from "@site/prismicio";
 import { useEffect, useState } from "react"
-import { PrismicNextImage } from '@prismicio/next'
 import { SliceZone } from '@prismicio/react'
 import { components } from '../slices'
 import styled from 'styled-components'
@@ -16,18 +14,13 @@ display: block;
 }
 `
 
-const NavHold = styled.div`
-position: absolute;
-width: 100%;
-display: flex;
-`
-
 export function HeroSection() {
-  const [home, setData] = useState('');
+  const [home, setData] = useState<any | null>(null);
 
-  const client = createClient();
 
   useEffect(() => {
+    const client = createClient();
+
     const callData = async () => {
     const home = await client.getSingle('homepage');
     setData(home);
@@ -35,8 +28,7 @@ export function HeroSection() {
   callData();
   }, []
   );
-  console.log(home)
-if(home != ''){
+if(home != null){
   return (
     <Container className='relative z-[-1] mt-[-148px] md:mt-[-116px]'>
     <SliceZone slices={home.data.slices} components={components} />

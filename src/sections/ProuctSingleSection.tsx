@@ -1,14 +1,7 @@
 import { storefront } from '@site/utilities/storefront';
-import { truncate } from 'lodash';
 import { ProductPrice, AddToCartButton, ProductProvider } from '@shopify/hydrogen-react';
-import { NextImage, DataProps, invariant, useVariantSelector, formatTitle,  NextLink, useState, useAsyncFn, PageProps, NextSeo, fetchServerSideProps } from '@site/utilities/deps';
-import { Button } from '@site/snippets';
-import { getStaticProps } from '@site/pages/products';
-import { PrismicRichText } from '@prismicio/react'
-import {optionsState, useEffect} from 'react'
-import { availableParallelism } from 'os';
+import { NextImage, DataProps, invariant, useVariantSelector, formatTitle,  NextLink, useState } from '@site/utilities/deps';
 import { createClient } from "@site/prismicio";
-import { PrismicNextImage } from '@prismicio/next';
 
 export async function fetchProductSingleSection(handle: string) {
   
@@ -30,8 +23,7 @@ export async function fetchProductSingleSection(handle: string) {
       { handle },
       {
         title: true,
-        description: true,
-        descriptionHtml: true,
+        description: [{truncateAt: 15000},true],
         productType: true,
         seo: {
           title: true,
@@ -105,7 +97,6 @@ export async function fetchProductSingleSection(handle: string) {
     ...products,
     seo: {
       title: formatTitle(seo.title || title),
-      description: seo.description,
     },
   };
 }
@@ -113,14 +104,11 @@ export async function fetchProductSingleSection(handle: string) {
 export function ProductSingleSection(props: DataProps<typeof fetchProductSingleSection>) {
   const { variantId, options, selectOption } = useVariantSelector(props.data);
   const [checkHovered, setHover] = useState('');
-  const [activatedOption, setOption] = useState(null);
   const [checkQuantity, setQuantity] = useState(null);
   
   const [activeDiagram, setActiveDiagram] = useState(0);
   const [units, unitSwitch] = useState(true)
 
-  const [shirtDiagram, setData] = useState('');
-  const client = createClient();
   const [diagramToggle, setDiagramToggle] = useState(false);
 
   const shirtSizes = [
@@ -138,7 +126,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
 
 
   function createMarkup() {
-    return {__html: props.data.descriptionHtml};
+    return {__html: props.data.description};
   }
   return (
     <ProductProvider data={props.data}>
@@ -151,7 +139,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
           
           (
            <>
-          <a key={node.node.handle} href={`/products/${node.node.handle}`} className={`group w-full pr-[10px] font-EuroExtended font-black leading-[18px] outline outline-2 outline-offset-[-1px] ${checkHovered == node.node.handle ? 'bg-black text-white outline-black' : ''}`} onMouseEnter={() => setHover(node.node.handle)} onMouseLeave={() => setHover('')}><div className="flex items-center "><h3 className='mx-auto my-[30px] pl-[10px] text-[18px] xl:mx-0 xl:text-[28px]'>{node.node.title}</h3><p className='hidden pl-[10px] font-Eurostile text-[18px] font-[400] xl:block'>{node.node.productType}</p></div></a>
+          <a key={node.node.handle} href={`/products/${node.node.handle}`} className={`group w-full pr-[10px] font-EuroExtended font-black leading-[18px] outline outline-2 outline-offset-[-1px] ${checkHovered == node.node.handle ? 'bg-black text-white outline-black' : ''}`} onMouseEnter={() => setHover(node.node.handle)} onMouseLeave={() => setHover('')}><div className="flex items-center "><h3 className='mx-auto my-[30px] pl-[10px] text-[18px] xl:mx-0 xl:text-[28px]'>{node.node.title}</h3><p className='hidden pl-[10px] font-Eurostile text-[18px] xl:block'>{node.node.productType}</p></div></a>
             </>
           ))}
           </div>
@@ -183,14 +171,14 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
 
               {props.data.title === "TS_01" ?       
               <div>
-              <div className='flex-row-reversed flex w-full justify-between font-Eurostile outline outline-2 outline-offset-[-1px]'>
+              <div className='flex w-full justify-between font-Eurostile outline outline-2 outline-offset-[-1px]'>
                 <h3 className='p-[7px] px-[20px]'>sizing guide</h3>
-                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
+                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage alt='' width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
               </div>
               <div className={`${diagramToggle ? '' : 'hidden'}`}>
             <div className={`flex w-full justify-between font-Eurostile`}>
               {shirtSizes.map((size, index) =>
-              <button onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
+              <button key={index} onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
               )}
             </div>
             <div className='relative outline outline-2 outline-offset-[-1px]'>
@@ -198,7 +186,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                 <button className={`p-[5px] ${units ? '' : 'text-gray-300'}`} onClick={() => unitSwitch(true)}>in.</button>
                 <button className={`p-[5px] ${units ? 'text-gray-300' : ''}`} onClick={() => unitSwitch(false)}>cm.</button>
               </div>
-              <NextImage width={500} height={500} src='/images/shirtdiagram.avif' /></div>
+              <NextImage width={500} height={500} src='/images/shirtdiagram.avif' alt=''/></div>
             <div className='flex w-full justify-between font-Eurostile'>
               <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>A.{units ? shirtSizes[activeDiagram].A : shirtSizes[activeDiagram].Acm}</h3>
               <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>B.{units ? shirtSizes[activeDiagram].B : shirtSizes[activeDiagram].Bcm}</h3>
@@ -213,12 +201,12 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
               <div>
               <div className='flex w-full justify-between font-Eurostile outline outline-2 outline-offset-[-1px]'>
                 <h3 className='p-[7px] px-[20px]'>sizing guide</h3>
-                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
+                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage alt='' width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
               </div>
               <div className={`${diagramToggle ? '' : 'hidden'}`}>
             <div className={`flex w-full justify-between font-Eurostile`}>
               {shortsSizes.map((size, index) =>
-              <button onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
+              <button key={index} onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
               )}
             </div>
             <div className='relative outline outline-2 outline-offset-[-1px]'>
@@ -226,7 +214,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                 <button className={`p-[5px] ${units ? '' : 'text-gray-300'}`} onClick={() => unitSwitch(true)}>in.</button>
                 <button className={`p-[5px] ${units ? 'text-gray-300' : ''}`} onClick={() => unitSwitch(false)}>cm.</button>
               </div>
-              <NextImage width={500} height={500} src='/images/shortsdiagram.avif' /></div>
+              <NextImage alt='' width={500} height={500} src='/images/shortsdiagram.avif' /></div>
             <div className='flex w-full justify-between font-Eurostile'>
               <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>A.{units ? shortsSizes[activeDiagram].A : shortsSizes[activeDiagram].Acm} max</h3>
               <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>B.{units ? shortsSizes[activeDiagram].B : shortsSizes[activeDiagram].Bcm} max</h3>
@@ -244,9 +232,8 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
               </div>
 
               <div className="mb-2">
-              {options.map(({ name, values }) => (
+              {options.map(({ name, values }) => {return(
                  <div key={name} className='mb-[20px]'>   
-                 {console.log(values)}  
                  {values.map(({ value, selected, disabled }, index) => {
                   const inStock = props.data.variants.nodes[index].quantityAvailable;
                    return (
@@ -254,7 +241,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                       className={`w-[100%] p-[10px] font-Eurostile outline outline-2 outline-offset-[-1px] ${inStock > 0 ? ` ${selected ? 'bg-black text-white outline-black' : ''}` : '!text-gray-300 outline-black'}`}
                        key={value}
                        disabled={disabled}
-                       onClick={() => {selectOption(name, value); setOption(value); setQuantity(inStock)}}
+                       onClick={() => {selectOption(name, value); setQuantity(inStock)}}
                      >
                        {value} {inStock > 0 ? null : '-out of stock'}
                        
@@ -262,7 +249,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                    );
                  })}
                </div>
-                ))}
+                )})}
               </div>
                  <div className='p-[20px]'>
               <AddToCartButton

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { setPreviewData, redirectToPreviewURL } from '@prismicio/next';
 
-import { createClient } from '../../../prismicio';
+import { createClient } from "@site/prismicio";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const client = createClient({ req });

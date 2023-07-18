@@ -1,7 +1,6 @@
 import { ReactNode } from '@site/utilities/deps';
 import { HeaderSection } from '@site/sections/HeaderSection';
 import { repositoryName } from '@site/prismicio';
-import {suspense} from 'react'
 import Head from 'next/head'
 
 interface Props {

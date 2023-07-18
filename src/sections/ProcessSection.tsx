@@ -1,7 +1,5 @@
-import { NextLink } from '@site/utilities/deps';
 import { createClient } from "@site/prismicio";
 import { useEffect, useState } from "react"
-import { PrismicNextImage } from '@prismicio/next'
 import { SliceZone } from '@prismicio/react'
 import { components } from '../slices'
 import styled from 'styled-components'
@@ -16,18 +14,13 @@ display: block;
 }
 `
 
-const NavHold = styled.div`
-position: absolute;
-width: 100%;
-display: flex;
-`
-
 export function ProcessSection() {
-  const [process, setData] = useState('');
+  const [process, setData] = useState<any | null>(null);
 
-  const client = createClient();
 
   useEffect(() => {
+    const client = createClient();
+
     const callData = async () => {
     const process = await client.getSingle('process');
     setData(process);
@@ -36,7 +29,7 @@ export function ProcessSection() {
   }, []
   );
   console.log(process)
-if(process != ''){
+if(process != null){
   return (
     <Container className='relative mx-auto w-lil outline outline-2 outline-offset-[-1px] sm:w-main'>
     <SliceZone slices={process.data.slices} components={components} />

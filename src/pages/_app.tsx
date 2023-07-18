@@ -23,7 +23,6 @@ export default function App({ Component, pageProps }: NextAppProps) {
       storeDomain={storeDomain}
       storefrontToken={publicStorefrontToken}
       storefrontApiVersion={storefrontApiVersion}
-      className={`${windsor.variable} font-sans`}
     >
       <DefaultSeo
         defaultTitle="Next Shopify Storefront"

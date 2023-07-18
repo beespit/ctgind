@@ -3,7 +3,7 @@ import { SliceComponentProps } from '@prismicio/react';
 import { PrismicNextImage } from '@prismicio/next'
 import styled from 'styled-components'
 
-const Image =styled.div`
+const Piccy=styled.div`
 display: flex;
 img{
 display: block;
@@ -27,10 +27,10 @@ export type TwoImagesProps = SliceComponentProps<Content.TwoImagesSlice>;
 const TwoImages = ({ slice }: TwoImagesProps): JSX.Element => {
   return (
     <section data-slice-type={slice.slice_type} data-slice-variation={slice.variation}>
-      <Image className='flex-wrap lilLogo:flex-nowrap'>
-          <PrismicNextImage field={slice.primary.image_1} />
-          <PrismicNextImage field={slice.primary.image_2} />
-      </Image>
+      <Piccy className='flex-wrap lilLogo:flex-nowrap'>
+          <PrismicNextImage field={slice.primary.image_1} alt=''/>
+          <PrismicNextImage field={slice.primary.image_2} alt='' />
+      </Piccy>
     </section>
   );
 };

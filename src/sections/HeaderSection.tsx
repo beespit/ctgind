@@ -31,7 +31,6 @@ export function HeaderSection() {
   }
   return (
     <header className={`${router.pathname === '/products/[handle]' ? ' fixed top-0 z-[13] w-[100%]' : ''}`}>
-      {console.log(router.pathname)}
       <div className="relative ml-[15px] mt-[15px] flex w-lil bg-white sm:ml-[30px] sm:mt-[30px] sm:w-main">
       <ul className="grid w-full grid-cols-small md:grid-cols-main xl:grid-cols-big">
         <NextLink href='/' className='col-span-full md:col-span-1'><li className="h-full p-[5px] outline outline-2 outline-offset-[-1px] lilLogo:p-[15px]">{logoCheck ? <img src='/images/logo.svg' className="w-[200px] p-[10px]"/> : <img src='/images/logoSmall.svg' className="h-[35px] "/>}</li></NextLink>

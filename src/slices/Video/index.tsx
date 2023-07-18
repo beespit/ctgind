@@ -1,9 +1,7 @@
 import { Content } from '@prismicio/client';
 import { SliceComponentProps } from '@prismicio/react';
 import { PrismicRichText } from '@prismicio/react'
-import { PrismicNextImage } from '@prismicio/next'
-
-import React, { useContext, useState } from 'react'
+import React from 'react'
 
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
@@ -18,8 +16,6 @@ export type VideoProps = SliceComponentProps<Content.VideoSlice>;
  */
 const Video = ({ slice }: VideoProps): JSX.Element => {
   console.log(slice)
-
-  const [playin, clickplay] = React.useState(true);
   const [show, toggleShow] = React.useState(false);
 
   return (
@@ -32,9 +28,9 @@ const Video = ({ slice }: VideoProps): JSX.Element => {
     width='100%'
     height='100%'
     onPlay={() => toggleShow(true)}
-    playing={playin}
     className='absolute outline outline-2 outline-offset-[-1px]'
-    controls='true'
+    controls={true}
+    playing={true}
     light={slice.primary.placeholder_image.url}
     config={{
   youtube: {

@@ -1,5 +1,5 @@
 import { storefront } from '@site/utilities/storefront';
-import { NextImage, NextLink, useState, useAsyncFn, DataProps } from '@site/utilities/deps';
+import {  NextLink, useState, useAsyncFn, DataProps } from '@site/utilities/deps';
 import { Button } from '@site/snippets';
 import { Money } from '@shopify/hydrogen-react';
 
@@ -82,9 +82,15 @@ export function ProductListSection(props: DataProps<typeof fetchProductListSecti
         <div className='col-start-1 col-end-5 grid lilLogo:grid-cols-2 lg:col-start-2 lg:grid-cols-3'>
         {pages
           .flatMap(({ edges }) => edges)
-          .map(({ node }) => (
+          .map(({ node }) => 
+          {
+            let imgToggle;            
+            if(checkHovered === node.handle){
+              imgToggle = node.images.nodes[1].url
+            }else imgToggle = node.featuredImage.url
+          return(
             <NextLink key={node.handle} href={`/products/${node.handle}`} className="group relative outline outline-2 outline-offset-[-1px]" onMouseEnter={() => setHover(node.handle)} onMouseLeave={() => setHover('')}>
-              <div style={{'--image-url': `url(${node.featuredImage.url})`, '--image-alt': `url(${node.images.nodes[1].url})`} } className={`h-[400px] bg-cover bg-center pb-[150%] ${checkHovered == node.handle ? 'bg-[image:var(--image-alt)]' : 'bg-[image:var(--image-url)]'}`}>
+              <div style={{backgroundImage: `url(${imgToggle})`}} className={`h-[400px] bg-cover bg-center pb-[150%]`}>
               <div className='absolute bottom-0 m-[30px] xl:hidden'>
               <div className='flex items-center'>
               <h3 className='font-EuroExtended text-[30px] font-black'>{node.title}</h3>
@@ -94,7 +100,7 @@ export function ProductListSection(props: DataProps<typeof fetchProductListSecti
               </div>
               </div>
             </NextLink>
-          ))}
+          )})}
           </div>
       </div>
 
