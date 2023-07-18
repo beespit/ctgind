@@ -1,0 +1,44 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"size": {
+				"__TYPE__": "FieldContent",
+				"value": "seen",
+				"type": "Text"
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": [
+					[
+						"measurement",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "view",
+							"type": "Text"
+						}
+					],
+					[
+						"size_in",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "try",
+							"type": "Text"
+						}
+					],
+					[
+						"size_cm",
+						{
+							"__TYPE__": "FieldContent",
+							"value": "nose",
+							"type": "Text"
+						}
+					]
+				]
+			}
+		]
+	}
+]

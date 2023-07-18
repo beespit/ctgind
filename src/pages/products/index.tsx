@@ -1,4 +1,5 @@
 import { PageProps, NextSeo, fetchServerSideProps } from '@site/utilities/deps';
+
 import { StoreLayout } from '@site/layouts/StoreLayout';
 import { ProductListSection, fetchProductListSection } from '@site/sections/ProductListSection';
 

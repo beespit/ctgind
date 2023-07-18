@@ -1,5 +1,8 @@
 import { ReactNode } from '@site/utilities/deps';
 import { HeaderSection } from '@site/sections/HeaderSection';
+import { repositoryName } from '@site/prismicio';
+import {suspense} from 'react'
+import Head from 'next/head'
 
 interface Props {
   children: ReactNode;
@@ -8,8 +11,12 @@ interface Props {
 export function StoreLayout(props: Props) {
   return (
     <>
+     <Head>
+     <link rel="stylesheet" href="https://use.typekit.net/wnh5qkt.css"/>
+      </Head>
       <HeaderSection />
-      <main className="mx-auto max-w-7xl p-6 lg:px-8">{props.children}</main>
+      <main className="">{props.children}
+  </main>
     </>
   );
 }

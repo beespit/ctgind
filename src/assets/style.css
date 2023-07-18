@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: windsor;
+    font-weight: 400;
+    src: url(/fonts/windsor.woff) format('woff');
+  }
+}

@@ -1,9 +1,19 @@
+
 import '@site/assets/style.css';
 import ProgressBar from 'nextjs-progressbar';
 import { NextAppProps, DefaultSeo } from '@site/utilities/deps';
 import { ShopifyProvider, CartProvider } from '@shopify/hydrogen-react';
+import '@site/assets/style.css'
+import localFont from '@next/font/local'
 
 import { storeDomain, publicStorefrontToken, storefrontApiVersion } from '@site/utilities/storefront';
+
+
+const windsor = localFont({
+  src:'../../public/fonts/windsor.woff',
+  variable: '--font-windsor'
+})
+
 
 export default function App({ Component, pageProps }: NextAppProps) {
   return (
@@ -13,6 +23,7 @@ export default function App({ Component, pageProps }: NextAppProps) {
       storeDomain={storeDomain}
       storefrontToken={publicStorefrontToken}
       storefrontApiVersion={storefrontApiVersion}
+      className={`${windsor.variable} font-sans`}
     >
       <DefaultSeo
         defaultTitle="Next Shopify Storefront"
@@ -20,7 +31,7 @@ export default function App({ Component, pageProps }: NextAppProps) {
         description="🛍 A Shopping Cart built with TypeScript, Tailwind CSS, Headless UI, Next.js, React.js, Shopify Hydrogen React,... and Shopify Storefront GraphQL API."
       />
       <CartProvider>
-        <ProgressBar color="orange" />
+        <ProgressBar color="black" />
         <Component {...pageProps} />
       </CartProvider>
     </ShopifyProvider>

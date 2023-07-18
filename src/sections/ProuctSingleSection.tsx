@@ -1,16 +1,38 @@
 import { storefront } from '@site/utilities/storefront';
 import { truncate } from 'lodash';
 import { ProductPrice, AddToCartButton, ProductProvider } from '@shopify/hydrogen-react';
-import { NextImage, DataProps, invariant, useVariantSelector, formatTitle } from '@site/utilities/deps';
+import { NextImage, DataProps, invariant, useVariantSelector, formatTitle,  NextLink, useState, useAsyncFn, PageProps, NextSeo, fetchServerSideProps } from '@site/utilities/deps';
 import { Button } from '@site/snippets';
+import { getStaticProps } from '@site/pages/products';
+import { PrismicRichText } from '@prismicio/react'
+import {optionsState, useEffect} from 'react'
+import { availableParallelism } from 'os';
+import { createClient } from "@site/prismicio";
+import { PrismicNextImage } from '@prismicio/next';
 
 export async function fetchProductSingleSection(handle: string) {
-  const { productByHandle } = await storefront.query({
+  
+
+  const { productByHandle, products } = await storefront.query({
+    products: [
+      { first: 24, reverse: true || null },
+      {
+        edges: {
+          node: {
+            handle: true,
+            title: true,
+            productType: true,
+          }
+        }
+      }
+    ],
     productByHandle: [
       { handle },
       {
         title: true,
-        description: [{ truncateAt: 256 }, true],
+        description: true,
+        descriptionHtml: true,
+        productType: true,
         seo: {
           title: true,
           description: true,
@@ -54,6 +76,7 @@ export async function fetchProductSingleSection(handle: string) {
             nodes: {
               id: true,
               availableForSale: true,
+              quantityAvailable: true,
               priceV2: {
                 amount: true,
                 currencyCode: true,
@@ -71,6 +94,7 @@ export async function fetchProductSingleSection(handle: string) {
       },
     ],
   });
+  
 
   invariant(productByHandle, `Product not found: ${handle}`);
 
@@ -78,77 +102,181 @@ export async function fetchProductSingleSection(handle: string) {
 
   return {
     ...productByHandle,
+    ...products,
     seo: {
       title: formatTitle(seo.title || title),
-      description: seo.description || truncate(description, { length: 256 }),
+      description: seo.description,
     },
   };
 }
 
 export function ProductSingleSection(props: DataProps<typeof fetchProductSingleSection>) {
   const { variantId, options, selectOption } = useVariantSelector(props.data);
+  const [checkHovered, setHover] = useState('');
+  const [activatedOption, setOption] = useState(null);
+  const [checkQuantity, setQuantity] = useState(null);
+  
+  const [activeDiagram, setActiveDiagram] = useState(0);
+  const [units, unitSwitch] = useState(true)
 
+  const [shirtDiagram, setData] = useState('');
+  const client = createClient();
+  const [diagramToggle, setDiagramToggle] = useState(false);
+
+  const shirtSizes = [
+    {size: 'small', A: '19in', B: '22in', Acm: '48cm', Bcm: '56cm'},
+    {size: 'medium', A: '21in', B: '23in', Acm: '53cm', Bcm: '58.5cm'},
+    {size: 'large', A: '22in', B: '24in', Acm: '56cm', Bcm: '60cm'},
+  ]
+
+  const shortsSizes = [
+    {size: 'small', A: '30in', B: '7.5in', Acm: '76cm', Bcm: '19cm'},
+    {size: 'medium', A: '33in', B: '7.5in', Acm: '53cm', Bcm: '19cm'},
+    {size: 'large', A: '35in', B: '7.5in', Acm: '56cm', Bcm: '19cm'},
+  ]
+
+
+
+  function createMarkup() {
+    return {__html: props.data.descriptionHtml};
+  }
   return (
     <ProductProvider data={props.data}>
       <section>
-        <div className="flex flex-col rounded-lg shadow-sm md:flex-row md:space-x-8">
-          <div className="md:basis-6/12 ">
-            <div className="h-full w-full overflow-hidden rounded-lg bg-gray-200">
-              <NextImage
-                src={props.data.images.nodes[0].url}
-                alt={props.data.images.nodes[0].altText || ''}
-                width={props.data.images.nodes[0].width}
-                height={props.data.images.nodes[0].height}
-                className="min-h-[600px] w-full object-cover object-center"
+        <div className="relative mx-auto  mt-[148px] grid w-lil grid-cols-4 grid-cols-main sm:w-main md:mt-[83px] lilLogo:mt-[95px] xl:mt-[112px] xl:grid-cols-4">
+        <div className=' fixed left-0 top-0 z-[2] h-[50px] w-[100%] bg-white'/>
+         
+          <div className='fixed hidden w-[120px] flex-col md:col-span-1 lilLogo:flex xl:w-[calc((100%-60px)/4)]'>
+          {props.data.edges.map((node) => 
+          
+          (
+           <>
+          <a key={node.node.handle} href={`/products/${node.node.handle}`} className={`group w-full pr-[10px] font-EuroExtended font-black leading-[18px] outline outline-2 outline-offset-[-1px] ${checkHovered == node.node.handle ? 'bg-black text-white outline-black' : ''}`} onMouseEnter={() => setHover(node.node.handle)} onMouseLeave={() => setHover('')}><div className="flex items-center "><h3 className='mx-auto my-[30px] pl-[10px] text-[18px] xl:mx-0 xl:text-[28px]'>{node.node.title}</h3><p className='hidden pl-[10px] font-Eurostile text-[18px] font-[400] xl:block'>{node.node.productType}</p></div></a>
+            </>
+          ))}
+          </div>
+
+          <div className="col-span-4 md:col-span-2  lilLogo:col-start-2">
+            <div className="col-span-2">
+              {props.data.images.nodes.map((pic) => 
+              <img
+                src={pic.url}
+                alt={pic.altText || ''}
+                className="w-[100%] outline outline-2 outline-offset-[-1px]"
               />
+              )}
             </div>
           </div>
 
-          <div className="md:basis-6/12">
-            <div className="mt-4 pt-5 md:pt-10">
-              <h2 className="sr-only">Product information</h2>
+          <div className="sticky top-[112px] col-span-4 h-fit md:col-span-2 lilLogo:col-span-1">
+              
+              <div className="outline outline-2 outline-offset-[-1px]">
+              <div className='p-[20px]'>
+              <h1 className="font-EuroExtended text-[22px] font-extrabold">{props.data.title}</h1>
+              <h2 className='font-Eurostile'>{props.data.productType}</h2>
+              </div>
+              <div
+                className='p-[20px] font-Eurostile outline outline-2 outline-offset-[-1px]' 
+                dangerouslySetInnerHTML={createMarkup()} 
+              />
 
-              <h1 className="mb-5 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">{props.data.title}</h1>
+              {props.data.title === "TS_01" ?       
+              <div>
+              <div className='flex-row-reversed flex w-full justify-between font-Eurostile outline outline-2 outline-offset-[-1px]'>
+                <h3 className='p-[7px] px-[20px]'>sizing guide</h3>
+                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
+              </div>
+              <div className={`${diagramToggle ? '' : 'hidden'}`}>
+            <div className={`flex w-full justify-between font-Eurostile`}>
+              {shirtSizes.map((size, index) =>
+              <button onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
+              )}
+            </div>
+            <div className='relative outline outline-2 outline-offset-[-1px]'>
+              <div className='absolute right-0 top-0 flex font-EuroExtended text-[12px] font-extrabold'>
+                <button className={`p-[5px] ${units ? '' : 'text-gray-300'}`} onClick={() => unitSwitch(true)}>in.</button>
+                <button className={`p-[5px] ${units ? 'text-gray-300' : ''}`} onClick={() => unitSwitch(false)}>cm.</button>
+              </div>
+              <NextImage width={500} height={500} src='/images/shirtdiagram.avif' /></div>
+            <div className='flex w-full justify-between font-Eurostile'>
+              <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>A.{units ? shirtSizes[activeDiagram].A : shirtSizes[activeDiagram].Acm}</h3>
+              <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>B.{units ? shirtSizes[activeDiagram].B : shirtSizes[activeDiagram].Bcm}</h3>
+            </div>
+            </div>
+            </div>
+              :
+              null
+            }
 
-              <p className="mb-5 text-base text-gray-900">{props.data.description}</p>
+              {props.data.title === "SH_01" ?       
+              <div>
+              <div className='flex w-full justify-between font-Eurostile outline outline-2 outline-offset-[-1px]'>
+                <h3 className='p-[7px] px-[20px]'>sizing guide</h3>
+                <button className={`w-[34px] px-[8px] outline outline-2 outline-offset-[-1px] ${diagramToggle ? 'bg-black' : ''}`} onClick={() => setDiagramToggle(!diagramToggle)}><NextImage width={500} height={500} src='/images/arrow.svg' className={`${diagramToggle ? 'invert' : 'rotate-180'}`}/></button>
+              </div>
+              <div className={`${diagramToggle ? '' : 'hidden'}`}>
+            <div className={`flex w-full justify-between font-Eurostile`}>
+              {shortsSizes.map((size, index) =>
+              <button onClick={() => setActiveDiagram(index)} className={`w-full p-[5px] outline outline-2 outline-offset-[-1px] ${activeDiagram === index ? 'bg-black text-white outline-black' : ''}`}>{size.size}</button>
+              )}
+            </div>
+            <div className='relative outline outline-2 outline-offset-[-1px]'>
+              <div className='absolute right-0 top-0 flex font-EuroExtended text-[12px] font-extrabold'>
+                <button className={`p-[5px] ${units ? '' : 'text-gray-300'}`} onClick={() => unitSwitch(true)}>in.</button>
+                <button className={`p-[5px] ${units ? 'text-gray-300' : ''}`} onClick={() => unitSwitch(false)}>cm.</button>
+              </div>
+              <NextImage width={500} height={500} src='/images/shortsdiagram.avif' /></div>
+            <div className='flex w-full justify-between font-Eurostile'>
+              <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>A.{units ? shortsSizes[activeDiagram].A : shortsSizes[activeDiagram].Acm} max</h3>
+              <h3 className='w-full p-[5px] text-center outline outline-2 outline-offset-[-1px]'>B.{units ? shortsSizes[activeDiagram].B : shortsSizes[activeDiagram].Bcm} max</h3>
+            </div>
+            </div>
+            </div>
+              :
+              null
+            }
+                
+              
 
-              <div className="mb-5 text-3xl tracking-tight text-gray-900">
+              <div className="m-0 mb-5 p-[20px] pb-0 font-Eurostile text-[22px] font-extrabold tracking-tight">
                 <ProductPrice data={props.data}></ProductPrice>
               </div>
 
               <div className="mb-2">
-                {options.map(({ name, values }) => (
-                  <div className="mb-3" key={name}>
-                    <div className="flex items-center justify-between">
-                      <h3 className="mb-1 text-lg font-medium text-gray-900">{name}</h3>
-                    </div>
-
-                    {values.map(({ value, selected, disabled }) => {
-                      return (
-                        <Button
-                          className="mr-1"
-                          color={selected ? 'primary' : 'dark'}
-                          size="sm"
-                          key={value}
-                          disabled={disabled}
-                          onClick={() => selectOption(name, value)}
-                        >
-                          {value}
-                        </Button>
-                      );
-                    })}
-                  </div>
+              {options.map(({ name, values }) => (
+                 <div key={name} className='mb-[20px]'>   
+                 {console.log(values)}  
+                 {values.map(({ value, selected, disabled }, index) => {
+                  const inStock = props.data.variants.nodes[index].quantityAvailable;
+                   return (
+                     <button
+                      className={`w-[100%] p-[10px] font-Eurostile outline outline-2 outline-offset-[-1px] ${inStock > 0 ? ` ${selected ? 'bg-black text-white outline-black' : ''}` : '!text-gray-300 outline-black'}`}
+                       key={value}
+                       disabled={disabled}
+                       onClick={() => {selectOption(name, value); setOption(value); setQuantity(inStock)}}
+                     >
+                       {value} {inStock > 0 ? null : '-out of stock'}
+                       
+                     </button>
+                   );
+                 })}
+               </div>
                 ))}
               </div>
-
+                 <div className='p-[20px]'>
               <AddToCartButton
                 variantId={variantId}
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-primary-600 p-3 text-base font-semibold text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-700"
+                className="w-full p-[10px] font-Eurostile outline outline-2 outline-black disabled:text-gray-300"
               >
-                Add to Cart
+                {checkQuantity === null ? 'select option' : checkQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
               </AddToCartButton>
+              <NextLink href='/cart'><div className='mt-[20px] w-full p-[10px] text-center font-Eurostile outline outline-2'>View Cart</div></NextLink>
+
+              </div>
             </div>
+
           </div>
+
         </div>
       </section>
     </ProductProvider>

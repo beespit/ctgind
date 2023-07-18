@@ -1,0 +1,49 @@
+{
+  "id": "email_signup",
+  "label": "email signup",
+  "format": "page",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "title": { "type": "Text", "config": { "label": "title", "placeholder": "" } },
+      "default_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "default_text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "success_text": {
+        "type": "StructuredText",
+        "config": {
+          "label": "success_text",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+        }
+      },
+      "email_field": { "type": "Text", "config": { "label": "email_field", "placeholder": "" } },
+      "submit_text": { "type": "Text", "config": { "label": "submit_text", "placeholder": "" } }
+    },
+    "SEO & Metadata": {
+      "meta_description": {
+        "config": { "label": "Meta Description", "placeholder": "A brief summary of the page" },
+        "type": "Text"
+      },
+      "meta_image": {
+        "config": { "constraint": { "height": 1260, "width": 2400 }, "label": "Meta Image", "thumbnails": [] },
+        "type": "Image"
+      },
+      "meta_title": {
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "A title of the page used for social media and search engines"
+        },
+        "type": "Text"
+      }
+    }
+  }
+}

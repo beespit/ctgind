@@ -3,10 +3,10 @@ import { NextImage, NextLink, useState, useAsyncFn, DataProps } from '@site/util
 import { Button } from '@site/snippets';
 import { Money } from '@shopify/hydrogen-react';
 
-export async function fetchProductListSection(cursor?: string) {
+export async function fetchSideNav(cursor?: string) {
   const { products } = await storefront.query({
     products: [
-      { first: 24, after: cursor, reverse: true || null },
+      { first: 12, after: cursor, reverse: true || null },
       {
         pageInfo: {
           hasNextPage: true,
@@ -57,14 +57,15 @@ export async function fetchProductListSection(cursor?: string) {
   return products;
 }
 
-export function ProductListSection(props: DataProps<typeof fetchProductListSection>) {
+export function SideNav(props: DataProps<typeof fetchSideNav>) {
   const [pages, setPages] = useState([props.data]);
   const lastPage = pages[pages.length - 1];
   const lastCursor = lastPage.edges[lastPage.edges.length - 1].cursor;
   const hasNextPage = lastPage.pageInfo.hasNextPage;
   const [checkHovered, setHover] = useState('');
+
   const [loader, load] = useAsyncFn(async () => {
-    const productList = await fetchProductListSection(lastCursor);
+    const productList = await fetchSideNav(lastCursor);
     setPages([...pages, productList]);
   }, [lastCursor]);
 
@@ -79,7 +80,7 @@ export function ProductListSection(props: DataProps<typeof fetchProductListSecti
         ))
         }
         </div>
-        <div className='col-start-1 col-end-5 grid lilLogo:grid-cols-2 lg:col-start-2 lg:grid-cols-3'>
+        <div className='col-start-1 col-end-5 grid md:grid-cols-2 lg:col-start-2 lg:grid-cols-3'>
         {pages
           .flatMap(({ edges }) => edges)
           .map(({ node }) => (

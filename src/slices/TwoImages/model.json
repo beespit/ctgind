@@ -1,0 +1,21 @@
+{
+  "id": "two_images",
+  "type": "SharedSlice",
+  "name": "TwoImages",
+  "description": "TwoImages",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "image_1": { "type": "Image", "config": { "label": "image 1", "constraint": {}, "thumbnails": [] } },
+        "image_2": { "type": "Image", "config": { "label": "image 2", "constraint": {}, "thumbnails": [] } }
+      },
+      "items": {}
+    }
+  ]
+}

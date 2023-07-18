@@ -22,24 +22,24 @@ width: 100%;
 display: flex;
 `
 
-export function HeroSection() {
-  const [home, setData] = useState('');
+export function ProcessSection() {
+  const [process, setData] = useState('');
 
   const client = createClient();
 
   useEffect(() => {
     const callData = async () => {
-    const home = await client.getSingle('homepage');
-    setData(home);
+    const process = await client.getSingle('process');
+    setData(process);
   }
   callData();
   }, []
   );
-  console.log(home)
-if(home != ''){
+  console.log(process)
+if(process != ''){
   return (
-    <Container className='relative z-[-1] mt-[-148px] md:mt-[-116px]'>
-    <SliceZone slices={home.data.slices} components={components} />
+    <Container className='relative mx-auto w-lil outline outline-2 outline-offset-[-1px] sm:w-main'>
+    <SliceZone slices={process.data.slices} components={components} />
     </Container>
 );
 }else return null
