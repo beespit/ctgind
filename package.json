@@ -1,20 +1,20 @@
 {
-  "name": "next-shopify-storefront",
-  "description": "A Shopping Cart built with TypeScript, Tailwind CSS, Headless UI, Next.js, React.js, Shopify Hydrogen React,... and Shopify Storefront GraphQL API.",
-  "repository": "https://github.com/maxvien/next-shopify-storefront.git",
+  "name": "Ctg Industry",
+  "description": "Clothes for Earth.",
+  "repository": "https://github.com/beespit/ctgind.git",
   "version": "3.0.1",
   "license": "MIT",
   "author": {
-    "name": "Vien Dinh",
-    "email": "maxvien@gmail.com",
-    "url": "https://github.com/maxvien"
+    "name": "Al Nelson",
+    "email": "hi@mynameis.al",
+    "url": "https://github.com/beespit"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint && prettier --check src",
-    "slicemachine": "start-slicemachine",
+    "slicemachine": "start-slicemachine"
   },
   "dependencies": {
     "@apollo/client": "^3.7.17",
