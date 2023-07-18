@@ -143,7 +143,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
   return (
     <ProductProvider data={props.data}>
       <section>
-        <div className="relative mx-auto  mt-[148px] grid w-lil grid-cols-4 grid-cols-main sm:w-main md:mt-[83px] lilLogo:mt-[95px] xl:mt-[112px] xl:grid-cols-4">
+        <div className="relative mx-auto  mt-[148px] grid w-lil grid-cols-main sm:w-main md:mt-[83px] lilLogo:mt-[95px] xl:mt-[112px] xl:grid-cols-4">
         <div className=' fixed left-0 top-0 z-[2] h-[50px] w-[100%] bg-white'/>
          
           <div className='fixed hidden w-[120px] flex-col md:col-span-1 lilLogo:flex xl:w-[calc((100%-60px)/4)]'>
@@ -160,6 +160,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
             <div className="col-span-2">
               {props.data.images.nodes.map((pic) => 
               <img
+                key={pic.url}
                 src={pic.url}
                 alt={pic.altText || ''}
                 className="w-[100%] outline outline-2 outline-offset-[-1px]"

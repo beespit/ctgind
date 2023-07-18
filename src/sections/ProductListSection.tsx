@@ -75,7 +75,7 @@ export function ProductListSection(props: DataProps<typeof fetchProductListSecti
         {pages
         .flatMap(({edges}) => edges)
         .map(({node}) => (
-          <NextLink key={node.handle} href={`/products/${node.handle}`} className={`group pr-[10px] font-EuroExtended font-black leading-[18px] outline outline-2 outline-offset-[-1px] ${checkHovered == node.handle ? 'bg-black text-white outline-black' : ''}`} onMouseEnter={() => setHover(node.handle)} onMouseLeave={() => setHover('')}><div className="flex items-center "><h3 className='mx-auto my-[30px] pl-[10px] text-[18px] xl:mx-0 xl:text-[28px]'>{node.title}</h3><p className='hidden pl-[10px] font-Eurostile text-[18px] font-[400] xl:block'>{node.productType}</p></div></NextLink>
+          <NextLink key={node.handle} href={`/products/${node.handle}`} className={`group pr-[10px] font-EuroExtended font-black leading-[18px] outline outline-2 outline-offset-[-1px] ${checkHovered == node.handle ? 'bg-black text-white outline-black' : ''}`} onMouseEnter={() => setHover(node.handle)} onMouseLeave={() => setHover('')}><div className="flex items-center "><h3 className='mx-auto my-[30px] pl-[10px] text-[18px] xl:mx-0 xl:text-[28px]'>{node.title}</h3><p className='hidden pl-[10px] font-Eurostile text-[18px] xl:block'>{node.productType}</p></div></NextLink>
         ))
         }
         </div>
