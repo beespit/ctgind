@@ -283,16 +283,16 @@ export type FooterDocument<Lang extends string = string> = prismic.PrismicDocume
 /** Content for granular documents */
 interface GranularDocumentData {
   /**
-   * Slice Zone field in *granular*
+   * text field in *granular*
    *
-   * - **Field Type**: Slice Zone
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: granular.slices[]
+   * - **API ID Path**: granular.text
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/core-concepts/slices
+   * - **Documentation**: https://prismic.io/docs/core-concepts/rich-text-title
    *
    */
-  slices: prismic.SliceZone<GranularDocumentDataSlicesSlice>;
+  text: prismic.RichTextField;
   /**
    * Meta Description field in *granular*
    *
@@ -327,11 +327,6 @@ interface GranularDocumentData {
    */
   meta_title: prismic.KeyTextField;
 }
-/**
- * Slice for *granular → Slice Zone*
- *
- */
-type GranularDocumentDataSlicesSlice = never;
 /**
  * granular document from Prismic
  *
@@ -898,7 +893,6 @@ declare module '@prismicio/client' {
       FooterDocumentDataSectionItem,
       FooterDocument,
       GranularDocumentData,
-      GranularDocumentDataSlicesSlice,
       GranularDocument,
       HomepageDocumentData,
       HomepageDocumentDataSlicesSlice,

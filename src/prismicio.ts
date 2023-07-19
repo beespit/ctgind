@@ -23,6 +23,14 @@ const routes: prismic.ClientConfig['routes'] = [
     type:'process',
     path: '/process',
   },
+  {
+    type:'about',
+    path: '/about',
+  },
+  {
+    type:'granular',
+    path: '/fineprint/:uid',
+  },
 ];
 
 /**

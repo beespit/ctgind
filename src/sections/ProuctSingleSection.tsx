@@ -4,8 +4,6 @@ import { NextImage, DataProps, invariant, useVariantSelector, formatTitle,  Next
 import { createClient } from "@site/prismicio";
 
 export async function fetchProductSingleSection(handle: string) {
-  
-
   const { productByHandle, products } = await storefront.query({
     products: [
       { first: 24, reverse: true || null },
