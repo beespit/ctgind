@@ -41,7 +41,7 @@ if(about != null){
     <PrismicRichText field={about.data.priorities} />
     </div> 
     <div className="out-ctg col-span-4 xl:col-span-2">
-    <NextImage src={about.data.image.url} width={500} height={500} className={`out-ctg min-h-full w-full object-cover object-top`}></NextImage>
+    <NextImage alt='' src={about.data.image.url} width={500} height={500} className={`out-ctg min-h-full w-full object-cover object-top`}></NextImage>
     </div>
     </div>
     </Container>

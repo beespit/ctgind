@@ -25,8 +25,7 @@ export async function getStaticProps({ params }) {
       props: { page },
     };
   }
-
-  export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
+  export async function getStaticPaths() {
 
     return {
         paths: [], //indicates that no page needs be created at build time
