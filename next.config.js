@@ -1,14 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  redirects: async () => [
-    {
-      source: '/:path*',
-      has: [{ type: 'host', value: 'ctgind.com' }],
-      destination: 'https://www.ctgind.com/:path*',
-      permanent: true
-    }
-  ],
   images: {
     remotePatterns: [
       {
