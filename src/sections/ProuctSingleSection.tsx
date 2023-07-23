@@ -41,7 +41,6 @@ export async function fetchProductSingleSection(handle: string) {
               url: [
                 {
                   transform: {
-                    maxHeight: 600,
                   },
                 },
                 true,
@@ -145,12 +144,14 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
           <div className="col-span-4 md:col-span-2  lilLogo:col-start-2">
             <div className="col-span-2">
               {props.data.images.nodes.map((pic) => 
+
+              <div key={pic.url} className="outline outline-2 outline-offset-[-1px]">
               <img
-                key={pic.url}
                 src={pic.url}
                 alt={pic.altText || ''}
                 className="w-[100%] outline outline-2 outline-offset-[-1px]"
               />
+              </div>
               )}
             </div>
           </div>

@@ -3,12 +3,17 @@ import { useEffect, useState } from "react"
 import styled from 'styled-components'
 import { PrismicRichText } from '@prismicio/react'
 import { NextLink, useRouter } from "@site/utilities/deps";
+import { MailchimpSectionTemp } from "./MailchimpSectionTemp";
 
 
 export function FooterSection() {
   const [footer, setData] = useState<any | null>(null);
   const router = useRouter();
+  const [popUp, togglePop] = useState('false')
 
+  const popToggle = () => {
+    togglePop('true');
+  }
 
   useEffect(() => {
     const client = createClient();
@@ -20,6 +25,7 @@ export function FooterSection() {
   callData();
   }, []
   );
+
 
   const components = {
     heading1: ({ children }) => <h1>${children}</h1>,
@@ -59,14 +65,13 @@ export function FooterSection() {
                 <div className="out-ctg flex flex-wrap p-[20px] md:flex-nowrap">
                 <h3 className="w-full">Newsletter</h3>
                 <ul className="w-full font-Eurostile text-[14px]">
-                    <a href=''>subscribe to our newsletter</a>
+                    <button onClick={() => togglePop('true')}>subscribe to our newsletter</button>
                 </ul>
             </div>
-
+            {popUp === 'true' && <MailchimpSectionTemp tempToggler={() => togglePop('false')} toggler={() => togglePop('false')}/>}
     </div>
 );
 }else return null
-  
 }
 
 
