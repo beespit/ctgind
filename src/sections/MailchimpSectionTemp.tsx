@@ -39,24 +39,33 @@ const CustomForm = ({ status, message, onValidated }) => {
 
 export function MailchimpSectionTemp(props) {
     const url = process.env.NEXT_PUBLIC_MAILCHIMP_URL;
-    
+    const [pop, popToggle] = useState('true')
+
+    const timedPop = () => {
+      setTimeout(() => {popToggle('false')}, 2000);
+    }
     return (
-      <Draggable>
+      <>
+      {pop === 'true' &&      <Draggable>
         <div className={`fixed bottom-[20px] left-[20px] z-[20] w-[240px] bg-white p-[30px] font-Eurostile outline outline-2 outline-offset-[-1px] hover:cursor-move`}>
      <button onClick={props.tempToggler} className="absolute right-0 top-0 w-[40px] p-[8px] text-center outline outline-2 outline-offset-[-1px] hover:bg-black hover:text-white hover:outline-black">X</button>
        <MailchimpSubscribe
       url={url}
       render={({ subscribe, status, message }) => (
+        <>
         <CustomForm
           status={status}
           message={message}
-          onValidated={formData => {subscribe(formData); {status === "success" && props.toggler} }}
+          onValidated={formData => {subscribe(formData)}}
         />
+        {status === "success" && timedPop()}
+        </>
       )}
     />
     </div>
-    </Draggable>
-    
+    </Draggable>}
+
+    </>
     );
   
 }
