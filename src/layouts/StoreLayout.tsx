@@ -13,6 +13,8 @@ export function StoreLayout(props: Props) {
     <>
      <Head>
      <link rel="stylesheet" href="https://use.typekit.net/wnh5qkt.css"/>
+     <link rel="icon" href="/icons/favicon.ico" sizes="any" />
+
       </Head>
       <HeaderSection />
       <main>{props.children}

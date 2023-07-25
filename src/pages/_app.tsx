@@ -25,9 +25,9 @@ export default function App({ Component, pageProps }: NextAppProps) {
       storefrontApiVersion={storefrontApiVersion}
     >
       <DefaultSeo
-        defaultTitle="Next Shopify Storefront"
-        titleTemplate="%s • Next Shopify Storefront"
-        description="🛍 A Shopping Cart built with TypeScript, Tailwind CSS, Headless UI, Next.js, React.js, Shopify Hydrogen React,... and Shopify Storefront GraphQL API."
+        defaultTitle="Cottage Industry"
+        titleTemplate="%s • Cottage Industry"
+        description="Clothes for Earth."
       />
       <CartProvider>
         <ProgressBar color="black" />
