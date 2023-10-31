@@ -254,7 +254,6 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                </div>
                 )})}
               </div>
-              {console.log(checkQuantity)}
                  <div className='p-[20px]'>
               <AddToCartButton
                 variantId={variantId}
