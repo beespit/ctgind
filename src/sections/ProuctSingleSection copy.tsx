@@ -2,7 +2,6 @@ import { storefront } from '@site/utilities/storefront';
 import { ProductPrice, AddToCartButton, ProductProvider } from '@shopify/hydrogen-react';
 import { NextImage, DataProps, invariant, useVariantSelector, formatTitle,  NextLink, useState } from '@site/utilities/deps';
 import { createClient } from "@site/prismicio";
-import { values } from 'lodash';
 
 export async function fetchProductSingleSection(handle: string) {
   const { productByHandle, products } = await storefront.query({
@@ -231,36 +230,39 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
                 <ProductPrice data={props.data}></ProductPrice>
               </div>
               <div className="mb-2">
+          
               {options.map(({ name, values }) =>
+              
               { 
                 return(
-
-                 <div key={name} className='mb-[20px]'>  
-                 
-                  
+                 <div key={name} className='mb-[20px]'>   
                  {values.map(({ value, selected, disabled }, index) => {
-                   return (                 
+                  const inStock = props.data.variants.nodes[index].quantityAvailable;
+                  console.log(props.data.variants)
+                   return (
+                  <>
+                 
                      <button
-                      className={`w-[100%] p-[10px] font-Eurostile outline outline-2 outline-offset-[-1px] ${selected ? 'bg-black text-white outline-black' : ''}`}
+                      className={`w-[100%] p-[10px] font-Eurostile outline outline-2 outline-offset-[-1px] ${inStock > 0 ? ` ${selected ? 'bg-black text-white outline-black' : ''}` : '!text-gray-300 outline-black'}`}
                        key={value}
                        disabled={disabled}
-                       onClick={() => {selectOption(name, value), setQuantity(1)}}
+                       onClick={() => {selectOption(name, value); setQuantity(inStock)}}
                      >
-                       {value} 
+                       {value} {inStock > 0 ? null : '-out of stock'}
+                       
                      </button>
+                     </>
                    );
-                 })
-                }  
+                 })}
                </div>
                 )})}
               </div>
-              {console.log(checkQuantity)}
                  <div className='p-[20px]'>
               <AddToCartButton
                 variantId={variantId}
                 className="w-full p-[10px] font-Eurostile outline outline-2 outline-black disabled:text-gray-300"
               >
-                {checkQuantity === null ? 'select option' : variantId!=null ? 'Add to Cart' : 'Out of Stock'}
+                {checkQuantity === null ? 'select option' : checkQuantity > 0 ? 'Add to Cart' : 'Out of Stock'}
               </AddToCartButton>
               <NextLink href='/cart'><div className='mt-[20px] w-full p-[10px] text-center font-Eurostile outline outline-2'>View Cart</div></NextLink>
 
