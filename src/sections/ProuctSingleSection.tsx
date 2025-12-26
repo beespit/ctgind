@@ -266,11 +266,11 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
           ]
         };
 
-        const addResponse = await fetch(`https://ctg-ind.myshopify.com/api/2023-01/graphql`, {
+        const addResponse = await fetch(`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/${process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': 'f16019889621a22ba4630fba32e6eda3',
+            'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
           },
           body: JSON.stringify({
             query: addMutation,
@@ -339,11 +339,11 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
           }
         };
 
-        const createResponse = await fetch(`https://ctg-ind.myshopify.com/api/2023-01/graphql`, {
+        const createResponse = await fetch(`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/${process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Shopify-Storefront-Access-Token': 'f16019889621a22ba4630fba32e6eda3',
+            'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
           },
           body: JSON.stringify({
             query: createMutation,

@@ -74,11 +74,11 @@ export function CartSection() {
         }
       `;
 
-      const response = await fetch(`https://ctg-ind.myshopify.com/api/2023-01/graphql`, {
+      const updateResponse = await fetch(`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/${process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'f16019889621a22ba4630fba32e6eda3',
+          'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
         },
         body: JSON.stringify({
           query,
@@ -86,7 +86,7 @@ export function CartSection() {
         })
       });
 
-      const result = await response.json();
+      const result = await updateResponse.json();
       console.log('Cart fetch result:', result);
 
       if (result.data?.cart) {
@@ -131,11 +131,11 @@ export function CartSection() {
         }
       `;
 
-      const response = await fetch(`https://ctg-ind.myshopify.com/api/2023-01/graphql`, {
+      const response = await fetch(`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/${process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'f16019889621a22ba4630fba32e6eda3',
+          'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
         },
         body: JSON.stringify({
           query: mutation,
@@ -183,11 +183,11 @@ export function CartSection() {
         }
       `;
 
-      const response = await fetch(`https://ctg-ind.myshopify.com/api/2023-01/graphql`, {
+      const response = await fetch(`https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/${process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION}/graphql`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Shopify-Storefront-Access-Token': 'f16019889621a22ba4630fba32e6eda3',
+          'X-Shopify-Storefront-Access-Token': process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!,
         },
         body: JSON.stringify({
           query: mutation,
@@ -272,7 +272,7 @@ export function CartSection() {
                 <p className="mt-1 text-sm text-gray-500">
                   {line.merchandise.selectedOptions?.filter(option => 
                     option.name !== 'Title' && option.value !== 'Default Title'
-                  ).map((option, index, filteredArray) => (
+                  ).map((option, index) => (
                     <span key={option.name}>
                       {index ? ' / ' : ''}
                       {option.value}
@@ -285,21 +285,21 @@ export function CartSection() {
                 <div className='mr-0 flex h-full w-full outline outline-2 outline-offset-[-1px] md:mr-[20px] md:h-auto md:w-auto md:items-center'>
                   <button 
                     onClick={() => updateLineQuantity(line.id, Math.max(0, line.quantity - 1))}
-                    className='h-full w-[60px] outline outline-2 outline-offset-[-1px] md:w-[30px] hover:bg-gray-100'
+                    className='h-full w-[60px] outline outline-2 outline-offset-[-1px] hover:bg-gray-100 md:w-[30px]'
                   >
                     -
                   </button>    
                   <div className='w-full items-center self-center text-center md:self-auto'>{line.quantity}</div>
                   <button 
                     onClick={() => updateLineQuantity(line.id, line.quantity + 1)}
-                    className='w-[60px] outline outline-2 outline-offset-[-1px] md:w-[30px] hover:bg-gray-100'
+                    className='w-[60px] outline outline-2 outline-offset-[-1px] hover:bg-gray-100 md:w-[30px]'
                   >
                     +
                   </button>    
                 </div>
                 <button 
                   onClick={() => removeLineItem(line.id)}
-                  className='hidden w-full pr-[20px] text-center md:absolute md:bottom-[10px] md:block hover:text-red-600'
+                  className='hidden w-full pr-[20px] text-center hover:text-red-600 md:absolute md:bottom-[10px] md:block'
                 >
                   remove
                 </button>    
@@ -325,7 +325,7 @@ export function CartSection() {
           <button 
             onClick={handleCheckout}
             disabled={checkingOut}
-            className="flex-1 border px-6 py-3 text-base font-medium outline outline-2 outline-offset-[-1px] hover:bg-black hover:text-white hover:outline-black disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 border px-6 py-3 text-base font-medium outline outline-2 outline-offset-[-1px] hover:bg-black hover:text-white hover:outline-black disabled:cursor-not-allowed disabled:opacity-50"
           >
             {checkingOut ? 'Redirecting...' : 'Checkout'}
           </button>
