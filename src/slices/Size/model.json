@@ -1,0 +1,22 @@
+{
+  "id": "size",
+  "type": "SharedSlice",
+  "name": "Size",
+  "description": "Size",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": { "size": { "type": "Text", "config": { "label": "size", "placeholder": "" } } },
+      "items": {
+        "measurement": { "type": "Text", "config": { "label": "measurement", "placeholder": "" } },
+        "size_in": { "type": "Text", "config": { "label": "size inches", "placeholder": "" } },
+        "size_cm": { "type": "Text", "config": { "label": "size cm", "placeholder": "" } }
+      }
+    }
+  ]
+}

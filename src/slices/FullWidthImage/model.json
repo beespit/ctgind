@@ -1,0 +1,18 @@
+{
+  "id": "full_width_image",
+  "type": "SharedSlice",
+  "name": "FullWidthImage",
+  "description": "FullWidthImage",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": { "image": { "type": "Image", "config": { "label": "image", "constraint": {}, "thumbnails": [] } } },
+      "items": {}
+    }
+  ]
+}
