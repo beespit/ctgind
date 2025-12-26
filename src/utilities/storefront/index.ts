@@ -1,10 +1,10 @@
 import { createStorefrontClient } from '@shopify/hydrogen-react';
 
-export const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN!;
-export const publicStorefrontToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN!;
-export const storefrontApiVersion = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION!;
+export const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'ctg-ind.myshopify.com';
+export const publicStorefrontToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN || '';
+export const storefrontApiVersion = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION || '2023-01';
 
-const { getStorefrontApiUrl, getPublicTokenHeaders } = createStorefrontClient({
+createStorefrontClient({
   storeDomain,
   storefrontApiVersion,
   publicStorefrontToken,
@@ -12,14 +12,23 @@ const { getStorefrontApiUrl, getPublicTokenHeaders } = createStorefrontClient({
 
 // Create a simple GraphQL client that uses the correct Shopify endpoint
 const graphqlClient = async (query: string, variables: any = {}) => {
+  // For build time, use fallback values if environment variables aren't set
+  // In production, proper environment variables should be configured in Vercel
+  const token = publicStorefrontToken || process.env.SHOPIFY_STOREFRONT_API_TOKEN;
+  const domain = storeDomain || process.env.SHOPIFY_STORE_DOMAIN;
+  
+  if (!token && process.env.NODE_ENV === 'production') {
+    throw new Error('Shopify Storefront API token is required in production');
+  }
+  
   // Construct the correct URL manually since getStorefrontApiUrl() is returning malformed URL
-  const url = `https://${storeDomain}/api/${storefrontApiVersion}/graphql`;
+  const url = `https://${domain}/api/${storefrontApiVersion}/graphql`;
   
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...getPublicTokenHeaders(),
+      'X-Shopify-Storefront-Access-Token': token || '',
     },
     body: JSON.stringify({
       query,
@@ -167,7 +176,7 @@ export const storefront = {
     
     throw new Error('Unsupported query format');
   },
-  mutation: (mutationObject: any) => {
+  mutation: () => {
     // Similar wrapper for mutations if needed
     throw new Error('Mutations not implemented yet');
   },
