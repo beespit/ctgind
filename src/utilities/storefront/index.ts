@@ -12,16 +12,17 @@ createStorefrontClient({
 
 // Create a simple GraphQL client that uses the correct Shopify endpoint
 const graphqlClient = async (query: string, variables: any = {}) => {
-  // For build time, use fallback values if environment variables aren't set
-  // In production, proper environment variables should be configured in Vercel
+  // Use environment variables with sensible defaults
   const token = publicStorefrontToken || process.env.SHOPIFY_STOREFRONT_API_TOKEN;
-  const domain = storeDomain || process.env.SHOPIFY_STORE_DOMAIN;
+  const domain = storeDomain;
   
-  if (!token && process.env.NODE_ENV === 'production') {
-    throw new Error('Shopify Storefront API token is required in production');
+  // If no token available and not in development, skip the request
+  if (!token) {
+    console.warn('No Shopify Storefront API token available');
+    throw new Error('Shopify API token not configured');
   }
   
-  // Construct the correct URL manually since getStorefrontApiUrl() is returning malformed URL
+  // Construct the correct URL
   const url = `https://${domain}/api/${storefrontApiVersion}/graphql`;
   
   const response = await fetch(url, {

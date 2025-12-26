@@ -4,7 +4,8 @@ import { Button } from '@site/snippets';
 import { Money } from '@shopify/hydrogen-react';
 
 export async function fetchProductListSection(cursor?: string) {
-  const { products } = await storefront.query({
+  try {
+    const { products } = await storefront.query({
     products: [
       { first: 24, after: cursor, reverse: true || null },
       {
@@ -55,6 +56,14 @@ export async function fetchProductListSection(cursor?: string) {
   });
 
   return products;
+  } catch (error) {
+    console.error('Failed to fetch products:', error);
+    // Return empty products structure for graceful fallback
+    return {
+      pageInfo: { hasNextPage: false },
+      edges: []
+    };
+  }
 }
 
 export function ProductListSection(props: DataProps<typeof fetchProductListSection>) {
