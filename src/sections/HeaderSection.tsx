@@ -19,7 +19,7 @@ function useCartQuantity() {
         query getCart($cartId: ID!) {
           cart(id: $cartId) {
             totalQuantity
-          }
+          } 
         }
       `;
 
