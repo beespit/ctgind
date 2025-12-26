@@ -2,7 +2,7 @@ import { createStorefrontClient } from '@shopify/hydrogen-react';
 
 export const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN || 'ctg-ind.myshopify.com';
 export const publicStorefrontToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_TOKEN || '';
-export const storefrontApiVersion = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION || '2023-01';
+export const storefrontApiVersion = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_API_VERSION || '2025-10';
 
 createStorefrontClient({
   storeDomain,
@@ -15,6 +15,13 @@ const graphqlClient = async (query: string, variables: any = {}) => {
   // Use environment variables with sensible defaults
   const token = publicStorefrontToken || process.env.SHOPIFY_STOREFRONT_API_TOKEN;
   const domain = storeDomain;
+  
+  console.log('GraphQL Client Debug:', {
+    domain,
+    tokenExists: !!token,
+    apiVersion: storefrontApiVersion,
+    env: process.env.NODE_ENV
+  });
   
   // If no token available and not in development, skip the request
   if (!token) {
