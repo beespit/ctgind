@@ -58,10 +58,27 @@ export async function fetchProductListSection(cursor?: string) {
   return products;
   } catch (error) {
     console.error('Failed to fetch products:', error);
-    // Return empty products structure for graceful fallback
+    // Return empty products structure with proper shape for graceful fallback
     return {
       pageInfo: { hasNextPage: false },
-      edges: []
+      edges: [
+        {
+          cursor: '',
+          node: {
+            handle: '',
+            title: 'No products available',
+            productType: '',
+            images: { nodes: [] },
+            priceRange: {
+              minVariantPrice: {
+                amount: '0',
+                currencyCode: 'USD'
+              }
+            },
+            featuredImage: null
+          }
+        }
+      ]
     };
   }
 }

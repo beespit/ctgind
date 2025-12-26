@@ -21,7 +21,24 @@ export const getStaticProps = fetchServerSideProps(async () => {
         data: {
           productListSection: {
             pageInfo: { hasNextPage: false },
-            edges: []
+            edges: [
+              {
+                cursor: '',
+                node: {
+                  handle: '',
+                  title: 'No products available',
+                  productType: '',
+                  images: { nodes: [] },
+                  priceRange: {
+                    minVariantPrice: {
+                      amount: '0',
+                      currencyCode: 'USD'
+                    }
+                  },
+                  featuredImage: null
+                }
+              }
+            ]
           },
         },
       },
