@@ -3,17 +3,33 @@ import { PageProps, NextSeo, fetchServerSideProps } from '@site/utilities/deps';
 import { StoreLayout } from '@site/layouts/StoreLayout';
 import { ProductListSection, fetchProductListSection } from '@site/sections/ProductListSection';
 
-export const getServerSideProps = fetchServerSideProps(async () => {
-  return {
-    props: {
-      data: {
-        productListSection: await fetchProductListSection(),
+export const getStaticProps = fetchServerSideProps(async () => {
+  try {
+    const productListSection = await fetchProductListSection();
+    return {
+      props: {
+        data: {
+          productListSection,
+        },
       },
-    },
-  };
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    // Return empty data to prevent build failure
+    return {
+      props: {
+        data: {
+          productListSection: {
+            pageInfo: { hasNextPage: false },
+            edges: []
+          },
+        },
+      },
+    };
+  }
 });
 
-export default function Page(props: PageProps<typeof getServerSideProps>) {
+export default function Page(props: PageProps<typeof getStaticProps>) {
   return (
     <StoreLayout>
       <NextSeo title="Products" description="All Products from Next Shopify Storefront" />
