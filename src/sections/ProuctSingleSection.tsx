@@ -1,6 +1,6 @@
 import { storefront } from '@site/utilities/storefront';
 import { ProductPrice, ProductProvider, useCart } from '@shopify/hydrogen-react';
-import { NextImage, DataProps, invariant, formatTitle, NextLink, useState, useEffect } from '@site/utilities/deps';
+import { NextImage, DataProps, invariant, formatTitle, NextLink, useState } from '@site/utilities/deps';
 import { createClient } from "@site/prismicio";
 import { values } from 'lodash';
 
@@ -107,30 +107,6 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
   
   const { linesAdd, status, lines, cost, totalQuantity } = useCart();
 
-  // Initialize selectedOptions with first available variant's options on mount
-  useEffect(() => {
-    if (props.data.variants.nodes.length > 0 && Object.keys(selectedOptions).length === 0) {
-      // Find the first available variant
-      const firstAvailableVariant = props.data.variants.nodes.find(variant =>
-        variant.availableForSale && variant.quantityAvailable > 0
-      );
-      
-      if (firstAvailableVariant) {
-        const initialOptions: {[key: string]: string} = {};
-        
-        firstAvailableVariant.selectedOptions.forEach(option => {
-          initialOptions[option.name] = option.value;
-        });
-        
-        console.log('Initializing selectedOptions with first available variant:', initialOptions);
-        setSelectedOptions(initialOptions);
-      } else {
-        // If no variants are available, don't auto-select anything
-        console.log('No available variants found, not auto-selecting');
-      }
-    }
-  }, [props.data.variants.nodes, selectedOptions]);
-
   // Debug: log cart state
   console.log('Cart state:', { status, lines, cost, totalQuantity });
 
@@ -149,33 +125,25 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
   console.log('Variant ID:', variantId);
   
   // Create options array for the UI
-  const options = props.data.options.map((option, optionIndex) => ({
+  const options = props.data.options.map(option => ({
     name: option.name,
     values: option.values.map(value => {
-      // First option (parent) is always selectable (no stock checking)
-      if (optionIndex === 0) {
-        return {
-          value,
-          selected: selectedOptions[option.name] === value,
-          disabled: false,
-          outOfStock: false,
-        };
-      }
+      // Only constrain by whatever OTHER option types are already selected, so
+      // either option can be picked first and the other adjusts accordingly.
+      const otherSelections = Object.fromEntries(
+        Object.entries(selectedOptions).filter(([key]) => key !== option.name)
+      );
+      const testSelection = { ...otherSelections, [option.name]: value };
       
-      // Subsequent options (children) are filtered based on parent selections
-      // Build test selection with all previous options + this current value
-      const testSelection = { ...selectedOptions, [option.name]: value };
-      
-      // Find if there's an available variant that matches all selected options
+      // Find if there's an available variant that matches the test selection
       const matchingVariant = props.data.variants.nodes.find(variant => {
-        // Check if this variant matches all the test selection
         const matchesAllOptions = Object.entries(testSelection).every(([optName, optValue]) => {
           return variant.selectedOptions.some(variantOpt => 
             variantOpt.name === optName && variantOpt.value === optValue
           );
         });
         
-        return matchesAllOptions && variant.availableForSale && variant.quantityAvailable > 0;
+        return matchesAllOptions && variant.availableForSale;
       });
       
       return {
@@ -195,8 +163,7 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
   };
 
   // Check if selected variant is available
-  const isVariantAvailable = selectedVariant ? 
-    selectedVariant.availableForSale && selectedVariant.quantityAvailable > 0 : false;
+  const isVariantAvailable = selectedVariant ? selectedVariant.availableForSale : false;
   
   // Determine button text and state
   const getButtonText = () => {
