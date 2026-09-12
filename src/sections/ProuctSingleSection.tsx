@@ -156,10 +156,14 @@ export function ProductSingleSection(props: DataProps<typeof fetchProductSingleS
   }));
 
   const selectOption = (name: string, value: string) => {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setSelectedOptions(prev => {
+      // Clicking an already-selected value deselects it instead of re-selecting
+      if (prev[name] === value) {
+        const { [name]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [name]: value };
+    });
   };
 
   // Check if selected variant is available
